@@ -1,34 +1,61 @@
-# 3x+1
+import os
+import numpy
 
-max = 0
-result = []
-frequency = {}
-summation = []
+def main():
 
-for i in range(10000):
-    occurrence = []
-    num = i
+    max = 0
+    file = 'db.txt'
+    i = 0
 
-    while num not in occurrence:
-        occurrence.append(num)
+    if os.path.exists(file):
+        with open(file) as f:
+            entries = f.readlines()
+            i = int(entries[-1][14:]) + 1
+            print(i)
+    else:
+        with open(file, 'x') as f:
+            f.writelines('num, count, summation, average, variance, standard deviation\n')
+            f.writelines(f'starting num: {i}')
 
-        if num % 2 == 0:
-            num = num>>1
-        else:
-            num = (num<<1) + num + 1
+    while i > -1:
+        occurrence = []
+        num = i
+        pos_polarity_count = 0
+        neg_polarity_count = 0
 
-    count = len(occurrence)
+        while num not in occurrence:
+            occurrence.append(num)
 
-    if count > max:
-        max = count
-        result = occurrence
+            if num % 2 == 0:
+                pos_polarity_count += 1
+                num = num>>1
+            else:
+                neg_polarity_count += 1
+                num = (num<<1) + num + 1
 
-        frequency[result[0]] = count
-        summation.append(sum(result))
+        count = len(occurrence)
 
-    print(i)
+        if count > max:
+            max = count
+            summation = sum(occurrence)
+            avg = summation/count
+            variance = numpy.var(occurrence)
+            deviation = numpy.std(occurrence)
 
-print("{0} has a count of {1}".format(result[0], max))
-print(result)
-print(frequency)
-print(summation)
+            replace = f'starting num: {i}'
+
+            with open(file, 'r') as f:
+                db = f.readlines()
+                with open(file, 'w') as f:
+                    for item in db[:-1]:
+                        f.write(item)
+                    f.writelines(f'{i}, {count}, {summation}, {avg}, {variance}, {deviation}\n')
+                    f.write(replace)
+
+        i += 1
+
+        print(i)
+
+
+if __name__== "__main__":
+   main()
