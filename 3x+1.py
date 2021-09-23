@@ -14,7 +14,7 @@ def main():
             print(i)
     else:
         with open(file, 'x') as f:
-            f.writelines('num, count, summation, average, variance, standard deviation\n')
+            f.writelines('num, count, positive polarity count, negative polarity count, summation, average, variance, standard deviation\n')
             f.writelines(f'starting num: {i}')
 
     while i > -1:
@@ -34,6 +34,7 @@ def main():
                 num = (num<<1) + num + 1
 
         count = len(occurrence)
+        replace = f'starting num: {i + 1}'
 
         if count > max:
             max = count
@@ -42,15 +43,21 @@ def main():
             variance = numpy.var(occurrence)
             deviation = numpy.std(occurrence)
 
-            replace = f'starting num: {i}'
-
             with open(file, 'r') as f:
                 db = f.readlines()
                 with open(file, 'w') as f:
                     for item in db[:-1]:
                         f.write(item)
-                    f.writelines(f'{i}, {count}, {summation}, {avg}, {variance}, {deviation}\n')
+                    f.writelines(f'{i}, {count}, {pos_polarity_count}, {neg_polarity_count}, {summation}, {avg}, {variance}, {deviation}\n')
                     f.write(replace)
+        else:
+            with open(file, 'r') as f:
+                db = f.readlines()
+                with open(file, 'w') as f:
+                    for item in db[:-1]:
+                        f.write(item)
+                    f.write(replace)
+
 
         i += 1
 
