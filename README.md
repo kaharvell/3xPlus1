@@ -1,12 +1,12 @@
-#3xPlus1
+# 3xPlus1
 
 In the chase of infinity, a number which can not be extrapolated by its very nature, 3xPlus1 aims to create a public database of observations of each maximum in ascending order.
 
-##What Is 3x+1?
+## What Is 3x+1?
 
 3x+1, or the **Collatz conjecture**, takes a number, and if it is odd, multiplies by three, else divides by two. Pretty simple, right? Staticians and mathmeticians who are passionate about the infinite are led to believe that there is a number that could be multiplied by three plus one all the way to infinity, meaning it never stops, or even simplier put, never reaches an even number. When it does reach an even number, the halving always ends in a violent spiral to an infinite loop of 4, 2, 1, 4. If you're interested in learning more about 3x+1, more information can be found [here](https://en.wikipedia.org/wiki/Collatz_conjecture).
 
-##What Does The Program Do?
+## What Does The Program Do?
 
 3xPlus1 does one thing currently, it stores information about each number, such as:
 
