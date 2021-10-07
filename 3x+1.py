@@ -1,25 +1,41 @@
 import os
 import numpy
+from numpy.core.numerictypes import maximum_sctype
+
+# Write iterator and max to starting_num file
+def write_to_file(file, i, m):
+    with open(file, 'w') as f:
+        f.write(f'{i}\n')
+        f.write(m)
+
+# If file does not exist, create and write arguments to file
+def file_exists(file, s, m=''):
+    if not os.path.exists(file):
+        with open(file, 'x') as f:
+            f.write(f'{s}\n')
+            if len(m) != 0:
+                f.write(m)
 
 def main():
 
-    max = 0
-    file = 'db.txt'
     i = 0
+    max_count = 0
 
-    # assign 'starting num' in file to iterator
-    if os.path.exists(file):
-        with open(file) as f:
-            entries = f.readlines()
-            i = int(entries[-1][14:]) + 1
-            print(i)
-    # create file if file does not exist
-    else:
-        with open(file, 'x') as f:
-            f.writelines('num, count, positive polarity count, negative polarity count, summation, average, variance, standard deviation\n')
-            f.writelines(f'starting num: {i}')
+    db = 'db.txt'
+    starting_num = 'starting_num.txt'
+    header = 'num, count, positive polarity count, negative polarity count, summation, average, variance, standard deviation'
 
-    while i < 1000000001:
+    # Check if files exist
+    file_exists(db, header)
+    file_exists(starting_num, str(i), str(max_count))
+
+    # Save iterator and highest_length from starting_num.txt to i and max_count
+    with open(starting_num, 'r') as f:
+        entries = f.readlines()
+        i = int(entries[0]) + 1
+        max_count = int(entries[1])
+
+    while i > -1:
         occurrence = []
         num = i
         pos_polarity_count = 0
@@ -30,46 +46,39 @@ def main():
 
             # if num is even divide by two
             if num % 2 == 0:
-                pos_polarity_count += 1
                 num = num>>1
+
+                pos_polarity_count += 1
+
             # else multiply by three add one
             else:
-                neg_polarity_count += 1
                 num = (num<<1) + num + 1
 
+                neg_polarity_count += 1
+
         count = len(occurrence)
-        replace = f'starting num: {i + 1}'
 
-        # store file contents to a list to rewrite file using write_to_file()
-        with open(file, 'r') as f:
-                db = f.readlines()
-
-        # if sequence length is greater than max, write variables to file
-        if count > max:
-            max = count
+        # if sequence's length is greater than max, write variables to file
+        if count > max_count:
+            max_count = count
             summation = sum(occurrence)
             avg = summation/count
             variance = numpy.var(occurrence)
             deviation = numpy.std(occurrence)
             s = f'{i}, {count}, {pos_polarity_count}, {neg_polarity_count}, {summation}, {avg}, {variance}, {deviation}\n'
 
-            write_to_file(file, db, replace, s)
+            with open(db, 'a') as f:
+                f.write(s)
 
-        # else write last num calculated to file to be assigned to iterator when program resumes
+            write_to_file(starting_num, str(i), str(max_count))
+
+        # else write iterator and max_count to file to be assigned to iterator when program resumes
         else:
-            write_to_file(file, db, replace)
+            write_to_file(starting_num, str(i), str(max_count))
 
         i += 1
 
         print(i)
-
-def write_to_file(file, content, replace, s = ''):
-    with open(file, 'w') as f:
-                for item in content[:-1]:
-                    f.write(item)
-                if len(s) != 0:
-                    f.writelines(s)
-                f.write(replace)
 
 if __name__== "__main__":
    main()
