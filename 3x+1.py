@@ -1,84 +1,70 @@
 import os
 import numpy
-from numpy.core.numerictypes import maximum_sctype
-
-# Write iterator and max to starting_num file
-def write_to_file(file, i, m):
-    with open(file, 'w') as f:
-        f.write(f'{i}\n')
-        f.write(m)
-
-# If file does not exist, create and write arguments to file
-def file_exists(file, s, m=''):
-    if not os.path.exists(file):
-        with open(file, 'x') as f:
-            f.write(f'{s}\n')
-            if len(m) != 0:
-                f.write(m)
 
 def main():
 
     i = 0
-    max_count = 0
+    max_length = 0
 
-    db = 'db.txt'
-    starting_num = 'starting_num.txt'
-    header = 'num, count, positive polarity count, negative polarity count, summation, average, variance, standard deviation'
+    file = 'db.txt'
 
-    # Check if files exist
-    file_exists(db, header)
-    file_exists(starting_num, str(i), str(max_count))
-
-    # Save iterator and highest_length from starting_num.txt to i and max_count
-    with open(starting_num, 'r') as f:
-        entries = f.readlines()
-        i = int(entries[0]) + 1
-        max_count = int(entries[1])
+    # check if db.txt exists
+    if os.path.exists(file):
+        # save last iteration and length calculated to i and max_length for a starting point
+        with open(file, 'r') as f:
+            db = f.readlines()
+            db = db[-1].split(', ')
+            i = int(db[0]) + 1
+            max_length = int(db[1])
+    else:
+        # create file to write observations to
+        with open(file, 'w') as f:
+            f.write('iteration, length, pos_polarity_count, neg_polarity_count, summation, avg, variance, deviation\n')
 
     while i > -1:
+        x = i
         occurrence = []
-        num = i
-        pos_polarity_count = 0
-        neg_polarity_count = 0
 
-        while num not in occurrence:
-            occurrence.append(num)
+        # if x in occurrence, exit endless loop
+        while x not in occurrence:
+            occurrence.append(x)
+
+            pos_polarity_count = 0
+            neg_polarity_count = 0
+
+            # if x is zero, binary calculations below won't work properly, so 3*0+1 = 1
+            if x == 0:
+                x = 1
 
             # if num is even divide by two
-            if num % 2 == 0:
-                num = num>>1
+            if x % 2 == 0:
+                x = x>>1
 
                 pos_polarity_count += 1
 
             # else multiply by three add one
             else:
-                num = (num<<1) + num + 1
+                x = (x<<1) + x + 1
 
                 neg_polarity_count += 1
 
-        count = len(occurrence)
+        length = len(occurrence)
 
-        # if sequence's length is greater than max, write variables to file
-        if count > max_count:
-            max_count = count
+        # if sequence's length is greater than max_length, write variables to file
+        if length >= max_length:
+            max_length = length
             summation = sum(occurrence)
-            avg = summation/count
+            avg = summation/length
             variance = numpy.var(occurrence)
             deviation = numpy.std(occurrence)
-            s = f'{i}, {count}, {pos_polarity_count}, {neg_polarity_count}, {summation}, {avg}, {variance}, {deviation}\n'
+            values = f'{i}, {max_length}, {pos_polarity_count}, {neg_polarity_count}, {summation}, {avg}, {variance}, {deviation}'
 
-            with open(db, 'a') as f:
-                f.write(s)
-
-            write_to_file(starting_num, str(i), str(max_count))
-
-        # else write iterator and max_count to file to be assigned to iterator when program resumes
-        else:
-            write_to_file(starting_num, str(i), str(max_count))
-
-        i += 1
+            with open(file, 'a') as f:
+                f.write(f'{values}\n')
 
         print(i)
+
+        i += 1
 
 if __name__== "__main__":
    main()
