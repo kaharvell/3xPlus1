@@ -13,7 +13,7 @@ In the chase of infinity, a number which can not be extrapolated by its very nat
 - The current number or iterator.
 - The current maximum sequence length (all the numbers an iteration 'reaches' before returning to 4, 2, 1).
 - Positive and negative 'polarity count' (count of positive and negative numbers, each).
-- The sum of all numbers in an iterations sequence.
+- The sum of all numbers in an iteration's sequence.
 - The average of all numbers in an iterations sequence.
 - The variance of the sequence.
 - The standard deviation of the sequence.
